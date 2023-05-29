@@ -1,0 +1,2 @@
+# solid_principle_example
+SOLID原則を理解するためのコード集
