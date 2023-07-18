@@ -24,8 +24,10 @@ _header: ""
 - 自己紹介
 - SOLIDについて
 - 単一責務の原則(single-responsibility principle)について
+- テーマ説明
 - 原則違反のコード例
 - 原則違反のコード改善例
+- 参考資料
 
 <!--
 _header: ""
@@ -42,18 +44,40 @@ _footer: ""
 - twitter: @juraruming
 
 # SOLIDについて
-
 <!--
 _footer: "" 
 -->
+設計の5原則の頭文字をとったもの。
+
+- S 単一責務の原則（Single Respomsibility Principle）
+- O オープン・クローズドの原則（Open Closed Principle）
+- L リスコフの置換原則（Liskov Substitution Principle）
+- I インターフェイス分離の原則（Interface Segregation Principle）
+- D 依存関係逆転の原則（Dependency Inversion Principle）
+
+## SOLID原則の重要性
+<!--
+_footer: "" 
+-->
+> 参考資料2より引用
+
+- 凝集度が高くなる
+- 他のモジュールと疎結合になる
+- 各モジュールの目的が明確に分けられると、コード変更の際の影響は局所化される。結果、テストしやすい設計になる。
+
+上記の特徴を持つと再利用しやすいコードになる。
+
 
 # 単一責務の原則(single-responsibility principle)について
-
 <!--
 _footer: "" 
 -->
+> 参考資料2より引用
+- モジュールは単一の責務を持つようにする。
+　モジュールはひとつのことだけをすべきであり、変更の理由もひとつであるべきということ。
+- 単一責務の原則を適用するとモジュールの凝集度が高くなる。まとまりのあるひとつの目的を持つ関数とデータから構成されるモジュールになる。
 
-# テーマについて
+# テーマ説明
 <!--
 _footer: "" 
 -->
@@ -157,6 +181,16 @@ _footer: ""
 -->
 
 
----
+# 参考資料
+<!--
+_footer: "" 
+-->
+1. [オブジェクト指向習得のための５ステップ【SOLID原則】](https://qiita.com/taktt7/items/af90960f580373f3bb9b)
 
+2. [テスト駆動開発による組み込みプログラミング―C言語とオブジェクト指向で学ぶアジャイルな設計](https://www.oreilly.co.jp/books/9784873116143/)
+
+
+
+
+---
 ご清聴ありがとうございました🙇
