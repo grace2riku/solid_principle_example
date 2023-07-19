@@ -149,9 +149,38 @@ _footer: ""
 <!--
 _footer: "" 
 -->
-1. main関数にゲームロジックが集約している
- - 責務が多い
- - main関数はブート部からのエントリポイントという役割と捉える
+1. ファイル名から処理が想像できない
+ - ファイル名から処理内容が想像できたほうが良い。
+ - shooting_watch_gpio.c ではGPIOを超えた上位の知識を持っている。
+ LEDの名称（USER_LED1, USER_LED2）、スイッチの名称（SW1, SW2）を知っているのは上位のモジュールでよい。LED、スイッチなどのデバイスがマイコンのどのピンに接続されているか知っているのは下位のソフトウェアモジュールというのが自然。
+上位は下位より抽象的な概念を扱う（下位は具体的）。
+---
+### 原則違反コードの改善ポイント1 ソースコード
+<!--
+_footer: "" 
+-->
+```shooting_watch_gpio.c:c
+// APS学習ボードピンアサイン
+#define SWITCH_1  (39)
+#define SWITCH_2  (29)
+
+void shooting_watch_gpio_create(void)
+{
+  /* 割り込み設定 */
+  board_gpio_intconfig(SWITCH_1, INT_FALLING_EDGE,    true, shooting_watch_gpio_switch_1_handler); 
+  board_gpio_intconfig(SWITCH_2, INT_FALLING_EDGE,    true, shooting_watch_gpio_switch_2_handler); 
+
+  if (board_gpio_int(SWITCH_1, true) < 0) { 
+    message("gpio_create board_gpio_int(switch_1) failure.\n");
+  }
+
+  if (board_gpio_int(SWITCH_2, true) < 0) {
+    message("gpio_create board_gpio_int(switch_2) failure.\n");
+  }  
+
+  return;
+}
+```
 
 ## 原則違反コードの改善ポイント2
 <!--
@@ -160,19 +189,72 @@ _footer: ""
 
 2. shooting_watch_gpio.cはGPIOデバイスドライバーとしての役割を超えている
  - デバイスドライバーは上位からの指示でデバイス制御することで再利用しやすくなる。
- - デバイスドライバーの中に割り込みハンドラが書かれている。デバイスドライバ単体で再利用しにくい。
- デバイスドライバより上位の層に割り込みハンドラを書けるようにデバイスドライバは関数仕様を考える。
+ - デバイスドライバーの中に割り込みハンドラが書かれている。デバイスドライバ単体で再利用しにくい。割り込みハンドラにはデバイスドライバより抽象的なアプリケーションロジックを書きたいこともある。
+ デバイスドライバより上位の層に割り込みハンドラを書けるようにデバイスドライバは関数仕様を考えた方が使い勝手がよさそう。
+
+---
+### 原則違反コードの改善ポイント2 ソースコード
+<!--
+_footer: "" 
+-->
+```shooting_watch_gpio.c:c
+static int shooting_watch_gpio_switch_1_handler(int irq, FAR void *context, FAR void *arg)
+{
+  ++shooting_count;
+
+  return 0;
+}
+
+static int shooting_watch_gpio_switch_2_handler(int irq, FAR void *context, FAR void *arg)
+{
+  int sw2_status = board_gpio_read(SWITCH_2);
+  int sw1_status = board_gpio_read(SWITCH_1);
+
+  if (sw1_status && !sw2_status) next_state = true;
+  if (!sw1_status && !sw2_status) exit_shooting_watch = true;
+
+  return 0;
+}
+```
 
 ## 原則違反コードの改善ポイント3
 <!--
 _footer: "" 
 -->
 
-3. main関数でハードウェアアクセス関数呼び出しをしている
+3. main関数でハードウェアアクセス関数を呼び出している
  - 責務を意識せず作り込みしソフトウェアの階層を無視している。
- アプリケーションは実現方法(ハードウェアの制御方法)を意識しないつくりが良い。
+ アプリケーションは実現方法(ハードウェアの具体的制御)を意識しないつくりが良い。
  アプリケーション部でハードウェアアクセスすると非常に再利用しにくいコードになる。
 
+---
+### 原則違反コードの改善ポイント3 ソースコード
+<!--
+_footer: "" 
+-->
+```shooting_watch_main.c:c
+int main(int argc, FAR char *argv[])
+{
+  int one_time_counter = 0;
+  int game_coundown; 
+
+  shooting_watch_gpio_create();
+
+  printf("Hello, shooting_watch!!!\n");
+
+  while(exit_shooting_watch != true) {
+    switch (game_state) {
+    case STOP:
+      if (one_time_counter == 0) {
+        printf("----- Press SW2 to start the game. When the game starts, shoot SW1 continuously.-----\n");
+        printf("----- Press SW1 and SW2 to end the game.-----\n");
+        one_time_counter = 1;
+
+        board_gpio_write(USER_LED_1, USER_LED_TURN_OFF);
+        board_gpio_write(USER_LED_2, USER_LED_TURN_OFF);
+      }
+
+```
 
 
 # 原則違反のコード改善例
