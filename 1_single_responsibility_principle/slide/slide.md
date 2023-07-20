@@ -107,8 +107,15 @@ _footer: ""
 <!--
 _footer: "" 
 -->
- - APS学習ボード
+ - APS学習ボード: このボードにLED, スイッチが実装されている
 ![width:1024px height:512px](img/aps_lerning_board_resize.png)
+
+## ゲーム環境紹介3
+<!--
+_footer: "" 
+-->
+ - Spresenseメインボード + 拡張ボード + APS学習ボード
+![width:1024px height:480px](img/shooting_watch_exec_env_resize.png)
 
 ## マイコン内部ブロック図
 <!--
@@ -143,7 +150,7 @@ https://github.com/grace2riku/spresense_game/tree/main/shooting_watch
 <!--
 _footer: "" 
 -->
-![bg right width:725px height:600px](img/srp_ng_class_resize.png)
+![bg width:1280px](img/srp_ng_class_resize.png)
 
 ## 原則違反コードの改善ポイント1
 <!--
@@ -261,6 +268,24 @@ int main(int argc, FAR char *argv[])
 <!--
 _footer: "" 
 -->
+対象コード:
+https://github.com/grace2riku/spresense_game/tree/refactoring_srp/shooting_watch
+
+ - aps_lerning_board_bsp.c, aps_lerning_board_bsp.h
+ - controller.c, controller.h
+ - game.c, game.h
+ - initialize.c, initialize.h
+ - main.c
+ - shooting_count.c, shooting_count.h
+
+
+---
+**改善クラス図**
+<!--
+_header: ""
+_footer: "" 
+-->
+![bg](img/srp_ok_class_resize.png)
 
 
 # 参考資料
