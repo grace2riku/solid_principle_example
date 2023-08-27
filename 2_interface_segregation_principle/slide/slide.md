@@ -337,7 +337,156 @@ public:
 <!--
 _footer: "" 
 -->
+インタフェース分離の原則で組込みソフトウェア向けのサンプルコードを考えた時にはじめに頭に浮かんだのがリングバッファでした。
+インタフェース分離とはリングバッファのライトとリードのインターフェースを分けるような実装かなぁと想像しました。
 
+こちらもChatGPTにコードを提示してもらいました。
+
+---
+<!--
+_footer: "" 
+-->
+原則違反の例
+```
+class IRingBuffer {
+public:
+    virtual void enqueue(int data) = 0;
+    virtual int dequeue() = 0;
+    virtual bool isEmpty() = 0;
+};
+
+class RingBuffer : public IRingBuffer {
+private:
+    int buffer[100];
+    int head;
+    int tail;
+
+public:
+    void enqueue(int data) override {
+        // データをバッファに追加する処理
+    }
+
+    int dequeue() override {
+        // バッファからデータを取り出す処理
+        return 0;
+    }
+
+    bool isEmpty() override {
+        // バッファが空かどうかを判定する処理
+        return true;
+    }
+};
+```
+
+---
+<!--
+_footer: "" 
+-->
+```
+class Application {
+public:
+    void processData(IRingBuffer* buffer) {
+        if (!buffer->isEmpty()) {
+            int data = buffer->dequeue();
+            // データを処理する
+        }
+    }
+};
+
+int main() {
+    RingBuffer buffer;
+    Application app;
+
+    // アプリケーションを実行
+    app.processData(&buffer);
+
+    return 0;
+}
+```
+
+---
+<!--
+_footer: "" 
+-->
+原則に則った例
+
+```
+class IEnqueuer {
+public:
+    virtual void enqueue(int data) = 0;
+};
+
+class IDequeuer {
+public:
+    virtual int dequeue() = 0;
+};
+
+class IBufferChecker {
+public:
+    virtual bool isEmpty() = 0;
+};
+
+class RingBuffer : public IEnqueuer, public IDequeuer, public IBufferChecker {
+private:
+    int buffer[100];
+    int head;
+    int tail;
+
+public:
+    void enqueue(int data) override {
+        // データをバッファに追加する処理
+    }
+
+    int dequeue() override {
+        // バッファからデータを取り出す処理
+        return 0;
+    }
+
+    bool isEmpty() override {
+        // バッファが空かどうかを判定する処理
+        return true;
+    }
+};
+```
+
+---
+<!--
+_footer: "" 
+-->
+```
+class Application {
+public:
+    void processData(IDequeuer* dequeuer, IBufferChecker* checker) {
+        if (!checker->isEmpty()) {
+            int data = dequeuer->dequeue();
+            // データを処理する
+        }
+    }
+};
+
+int main() {
+    RingBuffer buffer;
+    Application app;
+
+    // アプリケーションを実行
+    app.processData(&buffer, &buffer);
+
+    return 0;
+}
+```
+
+---
+<!--
+_footer: "" 
+-->
+* RingBufferクラスが分離した3つのインタフェースを使っている。
+エンキュー、デキューでクラスを分けると責務が分かれたクラスができると感じた。
+
+* ただ機械的にインタフェースを分離すれば良いわけではなく、
+
+どんな目的を達成したいからインターフェイスをどのような粒度で分離しするのか、
+
+そしてどのような責務を持つクラスで目的を実現するのか?、の思考・検討が大事だと感じた。
 
 # 今回の設計所感
 <!--
