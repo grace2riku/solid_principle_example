@@ -199,6 +199,11 @@ int main()
 <!--
 _footer: "" 
 -->
+参考資料4の複合機の例がわかりやすかったので説明に使わせていただく。
+
+![width:600 height:500px](img/複合機(NG)クラス図.png)
+
+![bg right width:600 height:500px](img/複合機(OK)クラス図.png)
 
 
 # 例2. 乗り物
@@ -212,7 +217,7 @@ _footer: ""
 _footer: "" 
 -->
 
-# 例3. リングバッファ
+# 例4. リングバッファ
 <!--
 _footer: "" 
 -->
@@ -248,6 +253,9 @@ _footer: ""
 2. [テスト駆動開発による組み込みプログラミング―C言語とオブジェクト指向で学ぶアジャイルな設計](https://www.oreilly.co.jp/books/9784873116143/)
 
 3. [Interfaceクラスの使い方ポイント解説【オブジェクト指向】](https://qiita.com/taktt7/items/74981c610d8cd451d4aa)
+
+4. [【オブジェクト指向】「インターフェース分離の原則」について](http://www.code-magagine.com/?p=17341)
+
 
 ---
 
