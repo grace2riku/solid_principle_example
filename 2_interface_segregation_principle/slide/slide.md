@@ -241,6 +241,97 @@ _footer: ""
 <!--
 _footer: "" 
 -->
+インタフェース分離の原則で組込みソフトウェア向けのサンプルコードをChatGPTに提示してもらいました。
+原則違反の例、原則に則った例のコードを提示してもらいました。
+
+IoTの文脈でセンサーデータを読み込み、活用するシステムをイメージしてもらえればと思います。
+
+---
+<!--
+_footer: "" 
+-->
+原則違反の例
+```
+class IDevice {
+public:
+    virtual void readData() = 0;
+    virtual void writeData() = 0;
+    virtual void performAction() = 0;
+};
+
+class Sensor : public IDevice {
+public:
+    void readData() override {
+        // センサーデータを読み取る処理
+    }
+
+    void writeData() override {
+        // センサーデータを保存する処理
+    }
+
+    void performAction() override {
+        // センサーの動作を制御する処理
+    }
+};
+```
+
+---
+<!--
+_footer: "" 
+-->
+原則に則った例
+```
+class IDataReader {
+public:
+    virtual void readData() = 0;
+};
+
+class IDataWriter {
+public:
+    virtual void writeData() = 0;
+};
+
+class IActionPerformer {
+public:
+    virtual void performAction() = 0;
+};
+
+class Sensor : public IDataReader, public IDataWriter, public IActionPerformer {
+public:
+    void readData() override {
+        // センサーデータを読み取る処理
+    }
+
+    void writeData() override {
+        // センサーデータを保存する処理
+    }
+
+    void performAction() override {
+        // センサーの動作を制御する処理
+    }
+};
+```
+
+---
+<!--
+_footer: "" 
+-->
+データの読み込み、書き込みを分けると組込みソフトウェアの現場で使いそうな汎用的なパターンになりそうです。
+
+```
+class SensorDataDispley : public IDataReader, public IActionPerformer {
+public:
+    void readData() override { // センサーデータを読み取る処理 }
+    void performAction() override { // センサーの動作を制御する処理 }
+};
+
+class SensorDataStore : public IDataWriter {
+public:
+    void writeData() override { // センサーデータを保存する処理 }
+};
+```
+
+
 
 # 例4. リングバッファ
 <!--
