@@ -87,8 +87,7 @@ _footer: ""
 - こちらに学習の振り返りに使う目的でZennのスクラップを用意しました。
 活用ください。
 
-★TODO
-[【SOLID原則】#2 "インターフェイス分離の原則（Interface segregation principle）"の勉強会後の振り返り](https://zenn.dev/k_abe/scraps/858cbb3928e454)
+[【SOLID原則】#3 "依存性逆転の原則（dependency inversion principle）"の勉強会後の振り返り](https://zenn.dev/k_abe/scraps/4fe813cb372df3)
 
 
 # 参考資料
