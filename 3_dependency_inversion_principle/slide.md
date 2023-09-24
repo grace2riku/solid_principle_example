@@ -196,9 +196,110 @@ _footer: ""
 _footer: "" 
 -->
 ![bg right width:620px height:640px](img/前回設定値の反映classNG.png)
-【前回設定値の反映】機能で上位が下位モジュールに依存する場合
+【前回設定値の反映】機能のクラス図
+上位が下位モジュールに依存する場合
 
 何が課題になるでしょう???
+
+---
+前ページのコード
+
+```cpp:Boot.cpp
+// Boot.cpp
+#include "Boot.h"
+
+// コンストラクタの実装
+Boot::Boot() {
+    _settingValue = new SettingValueRam();
+}
+
+Boot::~Boot() {
+    delete _settingValue;
+}
+
+int Boot::readSettingValue() {
+    return _settingValue->read();
+}
+```
+
+---
+```cpp:Boot.h
+// Boot.h
+#ifndef _H_BOOT_
+#define _H_BOOT_
+
+#include "SettingValueRam.h"
+
+class Boot {
+    private:
+        SettingValueRam* _settingValue;
+
+    public:
+        Boot();
+        ~Boot();
+        int readSettingValue();
+};
+
+#endif	// _H_BOOT_
+```
+
+---
+```cpp:SettingValueRam.cpp
+// SettingValueRam.cpp
+#include "SettingValueRam.h"
+
+// コンストラクタの実装
+SettingValueRam::SettingValueRam() {
+}
+
+void SettingValueRam::write() {
+}
+
+int SettingValueRam::read() {
+    return 123;
+}
+```
+
+---
+```cpp:SettingValueRam.h
+// SettingValueRam.h
+#ifndef _H_SETTINGVALUERAM_
+#define _H_SETTINGVALUERAM_
+
+class SettingValueRam {
+    private:
+
+    public:
+        SettingValueRam();
+        void write();
+        int read();
+};
+
+#endif	// _H_SETTINGVALUERAM_
+```
+
+---
+```cpp:no_dip_principle.cpp
+#include <iostream>
+using namespace std;
+#include "Boot.h"
+
+int main() {
+    Boot* boot = new Boot();
+
+    cout << "SettingValue = " << boot->readSettingValue() << endl;
+
+    delete boot;
+
+    return 0;
+}
+```
+
+```
+実行結果
+$ ./no_dip_principle.app 
+SettingValue = 123
+```
 
 # 原則に則った例
 <!--
