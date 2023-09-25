@@ -327,6 +327,9 @@ SettingValue = 123
 <!--
 _footer: "" 
 -->
+![bg right width:620px height:640px](img/前回設定値の反映class.png)
+【前回設定値の反映】機能のクラス図
+原則に則り、上位・下位も抽象に依存する場合
 
 
 # 依存性注入
