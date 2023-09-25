@@ -200,7 +200,8 @@ _footer: ""
 上位が下位モジュールに依存する場合
 
 ---
-前ページのコード
+前ページのクラス図のコード
+GitHub URL: [no_dip_principle](https://github.com/grace2riku/solid_principle_example/tree/main/3_dependency_inversion_principle/no_dip_principle)
 
 ```cpp:Boot.cpp
 // Boot.cpp
@@ -321,6 +322,114 @@ SettingValue = 123
 * コードが汚れる
 上位モジュールは下位モジュールがないと動かないから下位モジュールの動作を差し替えるテストコードを用意した、とする。
 上位モジュールに本番用コードとテスト用コードを切り替える本番コードには不要な分岐のロジックが実装されソースコードが汚れる。
+
+---
+コードが汚れる例 GitHub URL: [no_dip_principle_dirty](https://github.com/grace2riku/solid_principle_example/tree/main/3_dependency_inversion_principle/no_dip_principle_dirty)
+
+```cpp:Boot.cpp
+// Boot.cpp
+#include "Boot.h"
+
+// コンストラクタの実装
+Boot::Boot() {
+    if (settingValueSelect) {
+        _settingValue = new SettingValueRam();
+    } else {
+        _settingValueRamFake = new SettingValueRamFake();
+    }
+}
+
+Boot::~Boot() {
+    if (settingValueSelect) {
+        delete _settingValue;
+    } else {
+        delete _settingValueRamFake;
+    }
+}
+
+int Boot::readSettingValue() {
+    if (settingValueSelect) {
+        return _settingValue->read();
+    } else {
+        return _settingValueRamFake->read();
+    }
+}
+```
+
+---
+```cpp:Boot.h
+// Boot.h
+#ifndef _H_BOOT_
+#define _H_BOOT_
+
+#include "SettingValueRam.h"
+#include "SettingValueRamFake.h"
+
+class Boot {
+    private:
+        SettingValueRam* _settingValue;
+        SettingValueRamFake* _settingValueRamFake;
+
+    public:
+        int settingValueSelect = 0;
+
+        Boot();
+        ~Boot();
+        int readSettingValue();
+};
+
+#endif	// _H_BOOT_
+```
+
+---
+```cpp:SettingValueRamFake.cpp
+// SettingValueRamFake.cpp
+#include "SettingValueRamFake.h"
+
+// コンストラクタの実装
+SettingValueRamFake::SettingValueRamFake() {
+}
+
+void SettingValueRamFake::write() {
+}
+
+int SettingValueRamFake::read() {
+    return 456;
+}
+```
+
+---
+```cpp:SettingValueRamFake.h
+// SettingValueRamFake.h
+#ifndef _H_SETTINGVALUERAMFAKE_
+#define _H_SETTINGVALUERAMFAKE_
+
+class SettingValueRamFake {
+    private:
+
+    public:
+        SettingValueRamFake();
+        void write();
+        int read();
+};
+
+#endif	// _H_SETTINGVALUERAMFAKE_
+```
+
+```
+実行結果
+$ ./no_dip_principle_dirty.app 
+SettingValue = 456
+```
+
+---
+Boot.cppの実装を見ると下位モジュール(SettingValueRam)か下位モジュールのテストモジュール(SettingValueRamFake)を使うかで分岐が増えている。
+
+この分岐は本番コードには不要なコードである。
+
+上位モジュールが下位モジュールに依存している場合で、下位モジュールをテストしようとするとこのようなことがおきる。
+
+コードも汚くなるし、テストしにくい構造になっている。
 
 
 # 原則に則った例
