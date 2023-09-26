@@ -441,6 +441,103 @@ _footer: ""
 原則に則り、上位・下位も抽象に依存する場合
 
 ## 上位・下位も抽象に依存する
+前ページのクラス図を実装する。
+GitHub URL: [dip_principle](https://github.com/grace2riku/solid_principle_example/tree/main/3_dependency_inversion_principle/dip_principle)
+
+ポイント: 
+* 抽象はC++の仮想関数でInterfaceのように使う(ISettingValue.h)
+* 下位モジュールはISettingValueを使う(SettingValueRam.h)
+* 上位モジュールは下位モジュールではなく、ISettingValueをメンバ変数として持つ
+
+---
+```cpp:ISettingValue.h
+// ISettingValue.h
+#ifndef _H_ISETTINGVALUE_
+#define _H_ISETTINGVALUE_
+
+#include <iostream>
+using namespace std;
+
+class ISettingValue {
+    public:
+        virtual void write() = 0;
+        virtual int read() = 0;
+
+        // 仮想デストラクタ
+        virtual ~ISettingValue(){
+            cout << "ISettingValue destructor" << endl;
+        }
+};
+#endif	// _H_ISETTINGVALUE_
+```
+
+---
+```cpp:SettingValueRam.h
+// SettingValueRam.h
+#ifndef _H_SETTINGVALUERAM_
+#define _H_SETTINGVALUERAM_
+
+#include "ISettingValue.h"
+
+class SettingValueRam : public ISettingValue {
+    private:
+
+    public:
+        SettingValueRam();
+        ~SettingValueRam();
+        void write();
+        int read();
+};
+
+#endif	// _H_SETTINGVALUERAM_
+```
+
+---
+```cpp:Boot.h
+// Boot.h
+#ifndef _H_BOOT_
+#define _H_BOOT_
+
+#include "ISettingValue.h"
+
+class Boot {
+    private:
+        ISettingValue* _settingValue;
+
+    public:
+        Boot();
+        ~Boot();
+        int readSettingValue();
+};
+
+#endif	// _H_BOOT_
+```
+
+---
+```cpp:Boot.cpp
+// Boot.cpp
+#include "Boot.h"
+#include "SettingValueRam.h"
+#include <iostream>
+using namespace std;
+
+// コンストラクタの実装
+Boot::Boot() {
+    cout << "Boot constructor" << endl;
+
+    _settingValue = new SettingValueRam();
+}
+
+Boot::~Boot() {
+    cout << "Boot destructor" << endl;
+
+    delete _settingValue;
+}
+
+int Boot::readSettingValue() {
+    return _settingValue->read();
+}
+```
 
 
 ## Factoryでインスタンスを生成する
