@@ -590,9 +590,9 @@ int Boot::readSettingValue() {
 ---
 上位モジュールは下位モジュールに依存しないようにするのが依存性逆転の原則だが、上位モジュールは下位モジュールの依存を断ち切れていなかった😭
 
-これを改善していきます。
+これを改善していく。
 
-使うテクニックはデザインパターンでお馴染みの**Factory**です。
+使うテクニックはデザインパターンでお馴染みの**Factory**。
 Factoryクラスのメソッドでインスタンス生成を行う。
 こうすることで上位メソッドは下位メソッドとの依存をなくすことができる。
 
@@ -698,7 +698,60 @@ int SettingValueRamFake::read() {
 <!--
 _footer: "" 
 -->
+前回の【Factoryでインスタンスを生成する】で上位モジュールは下位モジュールとの依存をなくすことができた。
 
+前回のコードを**依存性注入**のテクニックを使い、よりオブジェクト指向っぽくする。
+
+---
+```cpp:Boot.h
+// Boot.h
+#ifndef _H_BOOT_
+#define _H_BOOT_
+
+#include "ISettingValue.h"
+
+class Boot {
+    private:
+        ISettingValue* _settingValue;
+
+    public:
+        Boot(ISettingValue* settingValue);  // ★ここに注目!!!
+        ~Boot();
+        int readSettingValue();
+};
+
+#endif	// _H_BOOT_
+```
+
+---
+```cpp:Boot.cpp
+// Boot.cpp
+#include "Boot.h"
+//#include "SettingValueRam.h"
+//#include "Factories.h"
+#include "ISettingValue.h"
+
+#include <iostream>
+using namespace std;
+
+// コンストラクタの実装
+Boot::Boot(ISettingValue* settingValue) {
+    cout << "Boot constructor" << endl;
+
+//    _settingValue = Factories::CreateSettingValue();
+    _settingValue = settingValue;
+}
+
+Boot::~Boot() {
+    cout << "Boot destructor" << endl;
+
+    delete _settingValue;
+}
+
+int Boot::readSettingValue() {
+    return _settingValue->read();
+}
+```
 
 # 設計についてのディスカッション・質問
 <!--
