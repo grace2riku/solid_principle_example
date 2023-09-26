@@ -539,9 +539,160 @@ int Boot::readSettingValue() {
 }
 ```
 
+---
+```
+実行結果
+$ ./dip_principle.app 
+Boot constructor
+SettingValueRam constructor
+
+SettingValue = 123
+
+Boot destructor
+SettingValueRam decstructor
+ISettingValue destructor
+```
+
+余計なプリント文が出力されているが、実行結果は原則違反コードの時と同じ。
 
 ## Factoryでインスタンスを生成する
+GitHub URL: [dip_principle_factories](https://github.com/grace2riku/solid_principle_example/tree/main/3_dependency_inversion_principle/dip_principle_factories)
 
+前回のコードは課題がある。
+さて、どこでしょう???
+
+---
+```cpp:Boot.h
+// Boot.h
+#include "Boot.h"
+#include "SettingValueRam.h"
+#include <iostream>
+using namespace std;
+
+// コンストラクタの実装
+Boot::Boot() {
+    cout << "Boot constructor" << endl;
+
+    _settingValue = new SettingValueRam();  // ★ここで下位モジュールに依存している
+}
+
+Boot::~Boot() {
+    cout << "Boot destructor" << endl;
+
+    delete _settingValue;
+}
+
+int Boot::readSettingValue() {
+    return _settingValue->read();
+}
+```
+
+---
+上位モジュールは下位モジュールに依存しないようにするのが依存性逆転の原則だが、上位モジュールは下位モジュールの依存を断ち切れていなかった😭
+
+これを改善していきます。
+
+使うテクニックはデザインパターンでお馴染みの**Factory**です。
+Factoryクラスのメソッドでインスタンス生成を行う。
+こうすることで上位メソッドは下位メソッドとの依存をなくすことができる。
+
+---
+```cpp:Boot.cpp
+// Boot.cpp
+#include "Boot.h"
+//#include "SettingValueRam.h"
+#include "Factories.h"
+#include <iostream>
+using namespace std;
+
+// コンストラクタの実装
+Boot::Boot() {
+    cout << "Boot constructor" << endl;
+
+    _settingValue = Factories::CreateSettingValue();
+}
+
+Boot::~Boot() {
+    cout << "Boot destructor" << endl;
+
+    delete _settingValue;
+}
+
+int Boot::readSettingValue() {
+    return _settingValue->read();
+}
+```
+
+---
+```cpp:Factories.h
+// Factories.h
+#ifndef _H_FACTORIES_
+#define _H_FACTORIES_
+
+#include "ISettingValue.h"
+#include "SettingValueRam.h"
+
+class Factories {
+    public: 
+        static ISettingValue* CreateSettingValue();
+};
+
+#endif	// _H_FACTORIES_
+```
+
+---
+```cpp:Factories.cpp
+// Factories.cpp
+#include "Factories.h"
+#include "ISettingValue.h"
+#include "SettingValueRam.h"
+#include "SettingValueRamFake.h"
+
+ISettingValue* Factories::CreateSettingValue() {
+    return new SettingValueRam();
+//    return new SettingValueRamFake();
+}
+```
+
+---
+```
+実行結果
+$ ./dip_principle_factories.app 
+SettingValue = 123
+```
+
+ファクトリで生成する下位モジュールをSettingValueRamFakeに切り替えた場合
+```
+実行結果
+$ ./dip_principle_factories.app 
+SettingValue = 456
+```
+
+---
+下位モジュールSettingValueRamFakeの実装
+```cpp:SettingValueRamFake.cpp
+// SettingValueRamFake.cpp
+#include "SettingValueRamFake.h"
+
+#include <iostream>
+using namespace std;
+
+// コンストラクタの実装
+SettingValueRamFake::SettingValueRamFake() {
+    cout << "SettingValueRamFake constructor" << endl;
+}
+
+SettingValueRamFake::~SettingValueRamFake() {
+    cout << "SettingValueRamFake decstructor" << endl;
+}
+
+void SettingValueRamFake::write() {
+}
+
+int SettingValueRamFake::read() {
+    return 456;
+}
+```
 
 # 依存性注入
 <!--
