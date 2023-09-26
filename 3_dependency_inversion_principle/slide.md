@@ -787,9 +787,13 @@ _footer: ""
 <!--
 _footer: "" 
 -->
-1. [オブジェクト指向習得のための５ステップ【SOLID原則】](https://qiita.com/taktt7/items/af90960f580373f3bb9b)
+1. [オブジェクト指向の原則３：依存関係逆転の原則とインタフェース分離の原則](https://www.udemy.com/course/objectfive3/)
+Udemyの講座。作成者はピーコック アンダーソンさん。依存関係逆転の原則以外のSOLID原則の講座もあり。
 
-2. [テスト駆動開発による組み込みプログラミング―C言語とオブジェクト指向で学ぶアジャイルな設計](https://www.oreilly.co.jp/books/9784873116143/)
+2. [オブジェクト指向習得のための５ステップ【SOLID原則】](https://qiita.com/taktt7/items/af90960f580373f3bb9b)
+
+3. [テスト駆動開発による組み込みプログラミング―C言語とオブジェクト指向で学ぶアジャイルな設計](https://www.oreilly.co.jp/books/9784873116143/)
+
 
 
 ---
