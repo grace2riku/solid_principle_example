@@ -46,7 +46,7 @@ _footer: ""
 - 所属: パーソルクロステクノロジー株式会社
 第1技術開発本部 第4設計部 設計2課
 - 医療機器の組込みソフトウェア開発。C言語。
-- 趣味: 宇宙開発（リーマンサットプロジェクト広報メンバー）
+- 趣味: 宇宙開発（[リーマンサットプロジェクト](https://www.rymansat.com/)広報メンバー）
 - LAPRASポートフォリオ: https://lapras.com/public/k-abe
 - Twitter: @juraruming
 
@@ -764,6 +764,138 @@ int Boot::readSettingValue() {
 システムの中の要求で自分の責務だけで目的を達成できないときは、他のクラスと協調して動く(私にはこれがオブジェクト指向っぽいと感じた訳です)。
 
 依存性注入はクラスが自分の責務を果たすために必要な情報を与えている。依存性の注入というワードに惑わされるかもしれないが、至極当然というか自然なテクニック。
+
+## 依存性注入とテスト
+依存性注入でテストをやってみる。
+
+テストのシナリオ：
+* 下位モジュールが読み出した設定値が正しいかテストしたい
+設定値の確認を行うクラス, メソッド：SettingValueValidation, validate
+* 読み出した設定値は100以上であれば正しいとする
+* 下位モジュールの設定値はモック・SettingValueMockでテストに適した値にする
+
+---
+GitHub: [dip_and_di_test_easy_env](https://github.com/grace2riku/dip_and_di_test_easy_env)
+
+```cpp:SettingValueValidation.cpp
+// SettingValueValidation.cpp 下位モジュールが読み出した値の検証
+#include "SettingValueValidation.h"
+#include "ISettingValue.h"
+
+#include <iostream>
+using namespace std;
+
+// コンストラクタの実装
+SettingValueValidation::SettingValueValidation(ISettingValue* settingValue) {
+    cout << "SettingValueValidation constructor" << endl;
+
+    _settingValue = settingValue;
+}
+
+SettingValueValidation::~SettingValueValidation() {
+    cout << "SettingValueValidation destructor" << endl;
+
+    delete _settingValue;
+}
+
+bool SettingValueValidation::validate() {
+    int value = _settingValue->read();
+    if (value >= 100) return true;
+    return false;
+}
+```
+
+---
+```cpp:SettingValueValidation.h
+// SettingValueValidation.h
+#ifndef _H_SETTINGVALUEVALIDATION_
+#define _H_SETTINGVALUEVALIDATION_
+
+#include "ISettingValue.h"
+
+class SettingValueValidation {
+    private:
+        ISettingValue* _settingValue;
+
+    public:
+        SettingValueValidation(ISettingValue* settingValue);
+        ~SettingValueValidation();
+        bool validate();
+};
+
+#endif	// _H_SETTINGVALUEVALIDATION_
+```
+
+---
+```cpp:SettingValueMock
+// SettingValueMock.cpp 下位モジュールの設定値読み・書きをモックする
+#include "SettingValueMock.h"
+
+#include <iostream>
+using namespace std;
+
+// コンストラクタの実装
+SettingValueMock::SettingValueMock() {
+    cout << "SettingValueMock constructor" << endl;
+}
+
+SettingValueMock::~SettingValueMock() {
+    cout << "SettingValueMock decstructor" << endl;
+}
+
+void SettingValueMock::write() {
+}
+
+int SettingValueMock::read() {
+    return 100;
+}
+```
+
+---
+```cpp:SettingValueExampleTest.cpp
+// SettingValueExampleTest.cpp テスト
+#include "CppUTest/TestHarness.h"
+
+#include <iostream>
+using namespace std;
+#include "SettingValueValidation.h"
+#include "SettingValueMock.h"
+#include "ISettingValue.h"
+
+TEST_GROUP(SettingValueExampleTest)
+{
+    SettingValueValidation* settingValueValidation;
+
+    void setup()
+    {
+        // モック(SettingValueMock)を設定値チェックのロジック(SettingValueValidation)に依存性注入している
+        settingValueValidation = new SettingValueValidation(new SettingValueMock());
+    }
+
+    void teardown()
+    {
+      delete settingValueValidation;
+    }
+};
+
+TEST(SettingValueExampleTest, SettingValueValid)
+{
+  CHECK(settingValueValidation->validate());
+}
+```
+
+---
+```
+// テストの結果表示
+$ ./bin/dip_and_di_test_easy_env -v
+TEST(SettingValueExampleTest, SettingValueValid)
+ - 0 ms
+
+OK (1 tests, 1 ran, 1 checks, 0 ignored, 0 filtered out, 1 ms)
+```
+
+* 依存性注入を使うことでテストコード、本番コードの切り替えも簡単に行える
+* 下位モジュールはデバイス制御に特化したコードにする(今回の例では設定値の読み出しのみ)。下位モジュールを使う上位モジュールのロジックをテストしやすくなる。
 
 
 # 今回の設計所感
