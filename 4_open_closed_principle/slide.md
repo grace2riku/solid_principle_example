@@ -113,6 +113,17 @@ _footer: ""
 日常にある【開放閉鎖】の例
 ▪️Apple ACアダプタ
 
+AppleのACアダプタも開放閉鎖かなと思った。
+![width:600 height:400px](img/apple_acアダプタ_全体.png)
+
+![bg right width:500 height:500px](img/apple_acアダプタ_取り外し.png)
+
+---
+アダプタは取り外し可能で海外でも使えるように考慮されていると予想できる。調べてみたら[Apple ワールドトラベルアダプタキット](https://support.apple.com/ja-jp/HT202114)なる製品があり、7種類のアダプタが付属していた。
+プラグ部分が拡張でき、プラグ部分を変更しても本体部分に変更が及ばない作りになっている。
+
+![center width:400 height:380px](img/Appleワールドトラベルアダプタキット.png)
+
 ---
 日常にある【開放閉鎖】の例
 ▪️apt-getコマンド
