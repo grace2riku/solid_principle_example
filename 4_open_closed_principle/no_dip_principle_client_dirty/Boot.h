@@ -7,7 +7,7 @@
 class Boot {
     private:
         SettingValueRam* _settingValue;
-        SettingValueSpiRam* _settingValueRamFake;
+        SettingValueSpiRam* _settingValueSpiRam;
 
     public:
         int settingValueSelect = 0;

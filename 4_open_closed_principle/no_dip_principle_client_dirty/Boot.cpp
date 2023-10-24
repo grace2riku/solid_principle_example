@@ -5,7 +5,7 @@ Boot::Boot() {
     if (settingValueSelect) {
         _settingValue = new SettingValueRam();
     } else {
-        _settingValueRamFake = new SettingValueSpiRam();
+        _settingValueSpiRam = new SettingValueSpiRam();
     }
 }
 
@@ -13,7 +13,7 @@ Boot::~Boot() {
     if (settingValueSelect) {
         delete _settingValue;
     } else {
-        delete _settingValueRamFake;
+        delete _settingValueSpiRam;
     }
 }
 
@@ -21,6 +21,6 @@ int Boot::readSettingValue() {
     if (settingValueSelect) {
         return _settingValue->read();
     } else {
-        return _settingValueRamFake->read();
+        return _settingValueSpiRam->read();
     }
 }
