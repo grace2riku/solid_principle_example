@@ -228,7 +228,104 @@ _footer: ""
 * 仕様変更（将来的にRAMが生産中止になることがわかった）でSPIのRAMに変更することになった、ということにします。
 
 ---
-TODO: ここにベースのソースコード（no_dip_principle）の説明をいれる。
+GitHub URL: [no_dip_principle](https://github.com/grace2riku/solid_principle_example/tree/main/4_open_closed_principle/no_dip_principle)
+
+```cpp:Boot.cpp
+// Boot.cpp
+#include "Boot.h"
+
+// コンストラクタの実装
+Boot::Boot() {
+    _settingValue = new SettingValueRam();
+}
+
+Boot::~Boot() {
+    delete _settingValue;
+}
+
+int Boot::readSettingValue() {
+    return _settingValue->read();
+}
+```
+
+---
+```cpp:Boot.h
+// Boot.h
+#ifndef _H_BOOT_
+#define _H_BOOT_
+
+#include "SettingValueRam.h"
+
+class Boot {
+    private:
+        SettingValueRam* _settingValue;
+
+    public:
+        Boot();
+        ~Boot();
+        int readSettingValue();
+};
+
+#endif	// _H_BOOT_
+```
+
+---
+```cpp:SettingValueRam.cpp
+// SettingValueRam.cpp
+#include "SettingValueRam.h"
+
+// コンストラクタの実装
+SettingValueRam::SettingValueRam() {
+}
+
+void SettingValueRam::write() {
+}
+
+int SettingValueRam::read() {
+    return 123;
+}
+```
+
+---
+```cpp:SettingValueRam.h
+// SettingValueRam.h
+#ifndef _H_SETTINGVALUERAM_
+#define _H_SETTINGVALUERAM_
+
+class SettingValueRam {
+    private:
+
+    public:
+        SettingValueRam();
+        void write();
+        int read();
+};
+
+#endif	// _H_SETTINGVALUERAM_
+```
+
+---
+```cpp:no_dip_principle.cpp
+#include <iostream>
+using namespace std;
+#include "Boot.h"
+
+int main() {
+    Boot* boot = new Boot();
+
+    cout << "SettingValue = " << boot->readSettingValue() << endl;
+
+    delete boot;
+
+    return 0;
+}
+```
+
+```
+実行結果
+$ ./no_dip_principle.app 
+SettingValue = 123
+```
 
 ---
 変更の方針としてつぎが考えられる
