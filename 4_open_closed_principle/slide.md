@@ -224,8 +224,8 @@ _footer: ""
 ---
 ![bg right width:620px height:640px](img/前回設定値の反映classNG.png)
 説明のシナリオ：
-* 現在はBootクラスとSettingValueRAMクラスが実装できている状態とする。
-* 仕様変更（将来的にRAMが生産中止になることがわかった）でSPIのRAMに変更することになった、ということにします。
+* 現在はBootクラスとSettingValueRAMクラスが実装済みとする。
+* 仕様変更（将来的にRAMが生産中止になることがわかった）で次ロットからSPIのRAMに変更することになった、というストーリーとします。
 
 ---
 GitHub URL: [no_dip_principle](https://github.com/grace2riku/solid_principle_example/tree/main/4_open_closed_principle/no_dip_principle)
