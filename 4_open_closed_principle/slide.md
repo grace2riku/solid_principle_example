@@ -330,14 +330,115 @@ SettingValue = 123
 ---
 変更の方針としてつぎが考えられる
 
-* 機能提供側のコードに新仕様を実装する
+* 既存の機能提供側のコードに新仕様を実装する
 * 仕様変更のモジュールを追加し、機能を使う側でどちらの機能を使うか選択する
 
 ---
-TODO: 機能提供側のコードに新仕様を実装する場合の説明・コードを書く
+TODO: 既存の機能提供側のコードに新仕様を実装する場合の説明・コードを書く
 
 ---
-TODO: 仕様変更のモジュールを追加し、機能を使う側でどちらの機能を使うか選択する場合の説明・コードを書く
+▪️仕様変更のモジュールを追加し、機能を使う側でどちらの機能を使うか選択する場合
+* 仕様変更部分を実装するクラスを追加する（SettingValueSpiRam）
+* 機能を使う側で機能を選択する（Boot.cpp）
+
+---
+機能を使う側で選択する場合 [no_dip_principle_client_dirty](https://github.com/grace2riku/solid_principle_example/tree/main/4_open_closed_principle/no_dip_principle_client_dirty)
+
+```cpp:Boot.cpp
+// Boot.cpp
+#include "Boot.h"
+
+// コンストラクタの実装
+Boot::Boot() {
+    if (settingValueSelect) {
+        _settingValue = new SettingValueRam();
+    } else {
+        _settingValueSpiRam = new SettingValueSpiRam();
+    }
+}
+
+Boot::~Boot() {
+    if (settingValueSelect) {
+        delete _settingValue;
+    } else {
+        delete _settingValueSpiRam;
+    }
+}
+
+int Boot::readSettingValue() {
+    if (settingValueSelect) {
+        return _settingValue->read();
+    } else {
+        return _settingValueSpiRam->read();
+    }
+}
+```
+
+---
+```cpp:Boot.h
+// Boot.h
+#ifndef _H_BOOT_
+#define _H_BOOT_
+
+#include "SettingValueRam.h"
+#include "SettingValueSpiRam.h"
+
+class Boot {
+    private:
+        SettingValueRam* _settingValue;
+        SettingValueSpiRam* _settingValueSpiRam;
+
+    public:
+        int settingValueSelect = 0;
+
+        Boot();
+        ~Boot();
+        int readSettingValue();
+};
+
+#endif	// _H_BOOT_
+```
+
+---
+```cpp:SettingValueSpiRam.cpp
+// SettingValueSpiRam.cpp
+#include "SettingValueSpiRam.h"
+
+// コンストラクタの実装
+SettingValueSpiRam::SettingValueSpiRam() {
+}
+
+void SettingValueSpiRam::write() {
+}
+
+int SettingValueSpiRam::read() {
+    return 456;
+}
+```
+
+---
+```cpp:SettingValueSpiRam.h
+// SettingValueSpiRam.h
+#ifndef _H_SETTINGVALUESPIRAM_
+#define _H_SETTINGVALUESPIRAM_
+
+class SettingValueSpiRam {
+    private:
+
+    public:
+        SettingValueSpiRam();
+        void write();
+        int read();
+};
+
+#endif	// _H_SETTINGVALUESPIRAM_
+```
+
+```
+実行結果
+$ ./no_dip_principle_client_dirty.app 
+SettingValue = 456
+```
 
 
 # 原則に則った例
