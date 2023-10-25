@@ -600,6 +600,23 @@ SettingValue = 456
 _footer: "" 
 -->
 
+**開放閉鎖の原則**に則るにはどうすれば良いのか?
+原則に則れない理由を改めて考えてみる。
+
+![bg right width:620px height:640px](img/前回設定値の反映classNG.png)
+
+既存のクラス（SettingValueRam）と追加したクラス（SettingValueSpiRam）を**同一視できていないこと**が理由として挙げられそう。
+
+---
+同一視できていない（SettingValueRamとSettingValueSpiRamを同じように扱えない）ために機能を利用する側でどちらの機能を利用するかの分岐が必要になる。
+結果、修正に閉じることができなくなり、開放閉鎖の原則に則ることができない。
+
+同一視するための技術として次がある（他にもあるかも・・・）。
+* C++: virtualでInterfaceのような動きを実現する。
+* C: 関数ポインタで動作する関数を動的に切り替える
+* C#: Interface, abstrct（抽象クラス）
+
+今回はC++でvirttualを使い、Interfaceのような動きでクラスを同一視する。
 
 # 今回の設計所感
 
