@@ -618,6 +618,166 @@ _footer: ""
 
 今回はC++でvirttualを使い、Interfaceのような動きでクラスを同一視する。
 
+---
+![bg right width:640px height:640px](img/前回設定値の反映class.png)
+* SettingValueRamとSettingValuSpiRamを同一視するためにInterfaceを使う。
+
+---
+原則に則った例 [ocp_principle_factories](https://github.com/grace2riku/solid_principle_example/tree/main/4_open_closed_principle/ocp_principle_factories)
+
+```cpp:ISettingValue.h
+// ISettingValue.h
+#ifndef _H_ISETTINGVALUE_
+#define _H_ISETTINGVALUE_
+
+#include <iostream>
+using namespace std;
+
+class ISettingValue {
+    public:
+        virtual void write() = 0;
+        virtual int read() = 0;
+
+        // 仮想デストラクタ
+        virtual ~ISettingValue(){
+            cout << "ISettingValue destructor" << endl;
+        }
+};
+#endif	// _H_ISETTINGVALUE_
+```
+
+---
+```cpp:SettingValueRam.h
+// SettingValueRam.h
+#ifndef _H_SETTINGVALUERAM_
+#define _H_SETTINGVALUERAM_
+
+#include "ISettingValue.h"
+
+class SettingValueRam : public ISettingValue {
+    private:
+
+    public:
+        SettingValueRam();
+        ~SettingValueRam();
+        void write();
+        int read();
+};
+
+#endif	// _H_SETTINGVALUERAM_
+```
+
+---
+```cpp:SettingValueSpiRam.h
+// SettingValueSpiRam.h
+#ifndef _H_SETTINGVALUESPIRAM_
+#define _H_SETTINGVALUESPIRAM_
+
+#include "ISettingValue.h"
+
+class SettingValueSpiRam : public ISettingValue {
+    private:
+
+    public:
+        SettingValueSpiRam();
+        ~SettingValueSpiRam();
+        void write();
+        int read();
+};
+
+#endif	// _H_SETTINGVALUESPIRAM_
+```
+
+---
+```cpp:Boot.h
+// Boot.h
+#ifndef _H_BOOT_
+#define _H_BOOT_
+
+#include "ISettingValue.h"
+
+class Boot {
+    private:
+        ISettingValue* _settingValue;
+
+    public:
+        Boot();
+        ~Boot();
+        int readSettingValue();
+};
+
+#endif	// _H_BOOT_
+```
+
+---
+```cpp:Boot.cpp
+// Boot.cpp
+#include "Boot.h"
+#include "Factories.h"
+
+#include <iostream>
+using namespace std;
+
+// コンストラクタの実装
+Boot::Boot() {
+    cout << "Boot constructor" << endl;
+
+    _settingValue = Factories::CreateSettingValue();
+}
+
+Boot::~Boot() {
+    cout << "Boot destructor" << endl;
+
+    delete _settingValue;
+}
+
+int Boot::readSettingValue() {
+    return _settingValue->read();
+}
+```
+
+---
+```cpp:Factories.cpp
+// Factories.cpp
+#include "Factories.h"
+#include "ISettingValue.h"
+#include "SettingValueRam.h"
+#include "SettingValueSpiRam.h"
+
+ISettingValue* Factories::CreateSettingValue() {
+//    return new SettingValueRam();
+    return new SettingValueSpiRam();
+}
+```
+
+---
+```cpp:Factories.h
+#ifndef _H_FACTORIES_
+#define _H_FACTORIES_
+
+#include "ISettingValue.h"
+
+class Factories {
+    public: 
+        static ISettingValue* CreateSettingValue();
+};
+
+#endif	// _H_FACTORIES_
+```
+
+```cpp:Factories.h
+// 実行結果
+$ ./ocp_principle_factories.app 
+SettingValue = 456
+```
+
+---
+* Interfaceを使うことで2つのクラスを同一視できた。結果、開放閉鎖の原則に則ることができた。
+
+* クラスを生成する責務を持つFactoryを導入した。
+
+
+
 # 今回の設計所感
 
 
