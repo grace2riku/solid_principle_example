@@ -258,7 +258,7 @@ _footer: ""
 * 仕様変更（将来的にRAMが生産中止になることがわかった）で次ロットからSPIのRAMに変更することになった、というストーリーとします。
 
 ---
-GitHub URL: [no_dip_principle](https://github.com/grace2riku/solid_principle_example/tree/main/4_open_closed_principle/no_dip_principle)
+GitHub URL: [no_ocp_principle](https://github.com/grace2riku/solid_principle_example/tree/main/4_open_closed_principle/no_ocp_principle)
 
 ```cpp:Boot.cpp
 // Boot.cpp
@@ -335,7 +335,7 @@ class SettingValueRam {
 ```
 
 ---
-```cpp:no_dip_principle.cpp
+```cpp:no_ocp_principle.cpp
 #include <iostream>
 using namespace std;
 #include "Boot.h"
@@ -353,7 +353,7 @@ int main() {
 
 ```
 実行結果
-$ ./no_dip_principle.app 
+$ ./no_ocp_principle.app 
 SettingValue = 123
 ```
 
@@ -374,7 +374,7 @@ SettingValue = 123
 
 ---
 ▪既存の機能提供側のコードに新仕様を実装する場合
-機能を使う側で選択する場合 [no_dip_principle_server_dirty](https://github.com/grace2riku/solid_principle_example/tree/main/4_open_closed_principle/no_dip_principle_server_dirty)
+機能を使う側で選択する場合 [no_ocp_principle_server_dirty](https://github.com/grace2riku/solid_principle_example/tree/main/4_open_closed_principle/no_ocp_principle_server_dirty)
 ```cpp:SettingValueRam.cpp
 //SettingValueRam.cpp
 #include "SettingValueRam.h"
@@ -463,7 +463,7 @@ class Boot {
 
 ```実行結果
 // 実行結果
-$ ./no_dip_principle_server_dirty.app 
+$ ./no_ocp_principle_server_dirty.app 
 SettingValue = 456 // eSettingValueRamType::SpiRam選択時
 ```
 
@@ -485,7 +485,7 @@ SettingValue = 456 // eSettingValueRamType::SpiRam選択時
 * 機能を使う側で機能を選択する（Boot.cpp）
 
 ---
-機能を使う側で選択する場合 [no_dip_principle_client_dirty](https://github.com/grace2riku/solid_principle_example/tree/main/4_open_closed_principle/no_dip_principle_client_dirty)
+機能を使う側で選択する場合 [no_ocp_principle_client_dirty](https://github.com/grace2riku/solid_principle_example/tree/main/4_open_closed_principle/no_ocp_principle_client_dirty)
 
 ```cpp:Boot.cpp
 // Boot.cpp
@@ -579,7 +579,7 @@ class SettingValueSpiRam {
 
 ```
 実行結果
-$ ./no_dip_principle_client_dirty.app 
+$ ./no_ocp_principle_client_dirty.app 
 SettingValue = 456
 ```
 
