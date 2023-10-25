@@ -1,5 +1,5 @@
-targets = no_dip_principle_client_dirty.app
-OBJS := no_dip_principle_client_dirty.o Boot.o SettingValueRam.o SettingValueSpiRam.o
+targets = no_ocp_principle_client_dirty.app
+OBJS := no_ocp_principle_client_dirty.o Boot.o SettingValueRam.o SettingValueSpiRam.o
 
 $(targets): $(OBJS)
 	g++ $(OBJS) -o $(targets)
@@ -7,7 +7,7 @@ $(targets): $(OBJS)
 .cpp.o:
 	g++ -std=c++11 -c $<
 
-no_dip_principle_client_dirty.o: no_dip_principle_client_dirty.cpp
+no_ocp_principle_client_dirty.o: no_ocp_principle_client_dirty.cpp
 Boot.o: Boot.cpp Boot.h
 SettingValueRam.o: SettingValueRam.cpp SettingValueRam.h
 SettingValueSpiRam.o: SettingValueSpiRam.cpp SettingValueSpiRam.h
