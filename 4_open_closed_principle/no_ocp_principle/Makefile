@@ -1,5 +1,5 @@
-targets = no_dip_principle.app
-OBJS := no_dip_principle.o Boot.o SettingValueRam.o
+targets = no_ocp_principle.app
+OBJS := no_ocp_principle.o Boot.o SettingValueRam.o
 
 $(targets): $(OBJS)
 	g++ $(OBJS) -o $(targets)
@@ -7,7 +7,7 @@ $(targets): $(OBJS)
 .cpp.o:
 	g++ -std=c++11 -c $<
 
-no_dip_principle.o: no_dip_principle.cpp
+no_ocp_principle.o: no_ocp_principle.cpp
 Boot.o: Boot.cpp Boot.h
 SettingValueRam.o: SettingValueRam.cpp SettingValueRam.h
 
