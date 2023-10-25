@@ -364,10 +364,123 @@ SettingValue = 123
 * 仕様変更のモジュールを追加し、機能を使う側でどちらの機能を使うか選択する
 
 ---
-TODO: 既存の機能提供側のコードに新仕様を実装する場合の説明・コードを書く
+▪️既存の機能提供側のコードに新仕様を実装する場合
+![bg right width:620px height:640px](img/前回設定値の反映_既存機能へ追加.png)
+
+* 既存の機能提供側とはSettingValueRamのこと。
+ここにSettingValueSpiRamの機能を追加する。
+
+* SettingValueRam内部でSettingValueSpiRamの機能を切り替えて使用する。
+
+---
+▪既存の機能提供側のコードに新仕様を実装する場合
+機能を使う側で選択する場合 [no_dip_principle_server_dirty](https://github.com/grace2riku/solid_principle_example/tree/main/4_open_closed_principle/no_dip_principle_server_dirty)
+```cpp:SettingValueRam.cpp
+//SettingValueRam.cpp
+#include "SettingValueRam.h"
+// コンストラクタの実装
+SettingValueRam::SettingValueRam(eSettingValueRamType eSettingValueRamType) {
+    _eSettingValueRamType = eSettingValueRamType;
+}
+void SettingValueRam::write() {
+    if (_eSettingValueRamType == eSettingValueRamType::Ram) {
+        // SettingValueRamのロジック
+    } else {
+        // SettingValueSpiRamのロジック
+    }
+}
+int SettingValueRam::read() {
+    if (_eSettingValueRamType == eSettingValueRamType::Ram) {
+        // SettingValueRamのロジック
+        return 123;
+    } else {
+        // SettingValueSpiRamのロジック
+        return 456;
+    }
+}
+```
+
+---
+```cpp:SettingValueRam.h
+// SettingValueRam.h
+#ifndef _H_SETTINGVALUERAM_
+#define _H_SETTINGVALUERAM_
+
+enum class eSettingValueRamType
+{
+    Ram,
+    SpiRam,
+};
+
+class SettingValueRam {
+    private:
+        eSettingValueRamType _eSettingValueRamType;
+
+    public:
+        SettingValueRam(eSettingValueRamType eSettingValueRamType);
+        void write();
+        int read();
+};
+#endif	// _H_SETTINGVALUERAM_
+```
+
+---
+```cpp:Boot.cpp
+// Boot.cpp
+#include "Boot.h"
+
+// コンストラクタの実装
+Boot::Boot() {
+//    _settingValue = new SettingValueRam(eSettingValueRamType::Ram);
+    _settingValue = new SettingValueRam(eSettingValueRamType::SpiRam);
+}
+
+Boot::~Boot() {
+    delete _settingValue;
+}
+
+int Boot::readSettingValue() {
+    return _settingValue->read();
+}
+```
+
+---
+```cpp:Boot.h
+// Boot.h
+#ifndef _H_BOOT_
+#define _H_BOOT_
+#include "SettingValueRam.h"
+class Boot {
+    private:
+        SettingValueRam* _settingValue;
+    public:
+        Boot();
+        ~Boot();
+        int readSettingValue();
+};
+#endif	// _H_BOOT_
+```
+
+```実行結果
+// 実行結果
+$ ./no_dip_principle_server_dirty.app 
+SettingValue = 456 // eSettingValueRamType::SpiRam選択時
+```
+
+---
+既存の機能提供側のコードに新仕様を実装してみた。
+この実装はつぎの特徴がある。
+
+* 既存機能と新機能が混在している。
+単一責務の原則の観点からオススメしない。
+
+* 既存機能と新機能が混在していることから機能切り替えの分岐が発生する。
+コードが汚くなる。機能のバリエーションが増えると複雑度が増す。
+→修正に閉じれていない。
 
 ---
 ▪️仕様変更のモジュールを追加し、機能を使う側でどちらの機能を使うか選択する場合
+![bg right width:620px height:640px](img/前回設定値の反映classNG.png)
 * 仕様変更部分を実装するクラスを追加する（SettingValueSpiRam）
 * 機能を使う側で機能を選択する（Boot.cpp）
 
@@ -469,6 +582,16 @@ class SettingValueSpiRam {
 $ ./no_dip_principle_client_dirty.app 
 SettingValue = 456
 ```
+
+---
+仕様変更のモジュールを追加し、機能を使う側でどちらの機能を使うか選択するようにしてみた。
+この実装はつぎの特徴がある。
+
+* 既存機能と新機能は分離した。
+
+* 機能を使う側は既存機能と新機能を切り替えるための分岐が発生する。
+コードが汚くなる。機能のバリエーションが増えると複雑度が増す。
+→修正に閉じれていない。
 
 
 # 原則に則った例
