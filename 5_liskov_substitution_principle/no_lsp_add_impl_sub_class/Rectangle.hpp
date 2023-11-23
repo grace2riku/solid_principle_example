@@ -1,5 +1,5 @@
-#ifndef _H_RECTANGLE_
-#define _H_RECTANGLE_
+#ifndef RECTANGLE_HPP_
+#define RECTANGLE_HPP_
 
 class Rectangle {
 protected:
@@ -16,4 +16,4 @@ public:
     int area() const ;
 };
 
-#endif	// _H_RECTANGLE_
+#endif	// RECTANGLE_HPP_

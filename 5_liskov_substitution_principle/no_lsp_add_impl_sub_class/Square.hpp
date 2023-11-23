@@ -1,5 +1,5 @@
-#ifndef _H_SQUARE_
-#define _H_SQUARE_
+#ifndef SQUARE_HPP_
+#define SQUARE_HPP_
 
 #include "Rectangle.hpp"
 
@@ -11,4 +11,4 @@ public:
     void setHeight(const int h) override;
 };
 
-#endif	// _H_SQUARE_
+#endif	// SQUARE_HPP_
