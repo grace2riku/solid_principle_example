@@ -93,6 +93,110 @@ _footer: ""
 
 ---
 1. サブクラスに実装している
+[長方形と正方形のサンプルコード](https://github.com/grace2riku/solid_principle_example/tree/main/5_liskov_substitution_principle/no_lsp_add_impl_sub_class)を例にして説明する。
+
+![bg right width:500px height:600px](img/no_lsp_add_impl_sub_class.png)
+
+---
+```cpp:Rectangle.hpp
+// Rectangle.hpp
+class Rectangle {
+protected:
+    int width, height;
+
+public:
+    Rectangle(const int width, const int height) : width(width), height(height) {}
+
+    virtual void setWidth(const int w);
+    virtual void setHeight(const int h);
+
+    int getWidth() const ;
+    int getHeight() const ;
+    int area() const ;
+};
+```
+
+---
+```cpp:Square.hpp
+// Square.hpp
+#include "Rectangle.hpp"
+
+class Square : public Rectangle {
+public:
+    Square(int size) : Rectangle(size, size) {}
+
+    void setWidth(const int w) override;
+    void setHeight(const int h) override;
+};
+```
+
+---
+```cpp:Rectangle.cpp
+// Rectangle.cpp
+#include "Rectangle.hpp"
+
+void Rectangle::setWidth(const int w) {
+    width = w;
+}
+
+void Rectangle::setHeight(const int h) {
+    height = h;
+}
+
+int Rectangle::getWidth() const {
+    return width;
+}
+
+int Rectangle::getHeight() const {
+    return height;
+}
+
+int Rectangle::area() const {
+    return width * height;
+}
+```
+
+---
+```cpp:Square.cpp
+// Square.cpp
+#include "Rectangle.hpp"
+#include "Square.hpp"
+
+void Square::setWidth(const int w) {
+    width = height = w;
+}
+
+void Square::setHeight(const int h) {
+    width = height = h;
+}
+```
+
+---
+```cpp:no_lsp_add_impl_sub_class.cpp
+// no_lsp_add_impl_sub_class.cpp
+#include <iostream>
+using namespace std;
+#include "Rectangle.hpp"
+#include "Square.hpp"
+
+void process(Rectangle& r) {
+    int w = r.getWidth();
+    r.setHeight(10);
+
+    std::cout << "expected area = " << (w * 10) << ", got " << r.area() << std::endl;
+}
+
+    
+int main() {
+    Rectangle r(5, 5);
+    process(r);  // expected area = 50, got 50
+
+    Square s(5);
+    process(s);  // expected area = 50, got 100, LSP violation!
+
+    return 0;
+}
+```
 
 
 ---

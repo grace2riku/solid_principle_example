@@ -1,0 +1,24 @@
+@startuml
+top to bottom direction
+
+class Rectangle {
+    - int width
+    - int height
+
+    + Rectangle(int width, int height)
+    + virtual void setWidth(int w)
+    + virtual void setHeight(int h)
+    + int getWidth()
+    + int getHeight()
+    + int area()
+}
+
+class Square {
+    + Square(int size)
+    + void setWidth(int w) override
+    + void setHeight(int h) override
+}
+
+Rectangle <|-- Square
+
+@enduml
