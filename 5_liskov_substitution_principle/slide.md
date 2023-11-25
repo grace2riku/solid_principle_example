@@ -213,6 +213,71 @@ int main() {
 ---
 2. 事前条件をサブクラスで強めている
 
+```cpp:Parent.hpp
+// Parent.hpp
+#ifndef PARENT_HPP_
+#define PARENT_HPP_
+
+class Parent {
+public:
+    virtual void doWork(int value);
+};
+
+#endif	// PARENT_HPP_
+```
+基底クラスの定義
+
+---
+```cpp:Parent.cpp
+// Parent.cpp
+#include <iostream>
+#include "Parent.hpp"
+using namespace std;
+
+void Parent::doWork(int value) {
+    if (value < 0) {
+        throw std::invalid_argument("Parent requires value >= 0");
+    }
+    // 作業をする
+    cout << "Parent value = " << value << endl;
+}
+```
+基底クラスの実装
+value < 0 か判定している。
+
+---
+```cpp:Child.hpp
+// Child.hpp
+#include "Parent.hpp"
+
+class Child : public Parent  {
+public:
+    void doWork(int value) override;
+};
+```
+サブクラスの定義
+
+---
+```cpp:Child.cpp
+// Child.cpp
+#include <iostream>
+#include "Child.hpp"
+using namespace std;
+
+void Child::doWork(int value) {
+    if (value < 10) {
+        throw std::invalid_argument("Child requires value >= 10"); // 事前条件を強化している
+    }
+    // 子クラス固有の作業をする
+    cout << "Child value = " << value << endl;
+}
+```
+サブクラスの実装
+
+**value < 10** か判定している。**基底クラスはvalue < 0** の判定だった。
+**事前条件を強化（条件が厳しく）** しているため基底クラスとサブクラスが置換不可になっている。
+
+
 ---
 3. 事後条件をサブクラスで弱めている
 
