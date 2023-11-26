@@ -471,29 +471,74 @@ int main() {
 ---
 5. サブクラスで独自の例外を投げている
 
----
 基底クラスの定義
 ```cpp:Parent.hpp
+// Parent.hpp
+class Parent {
+public:
+    virtual void doSomething();
+};
 ```
 
 ---
 基底クラスの実装
 ```cpp:Parent.cpp
+// Parent.cpp
+#include <iostream>
+#include "Parent.hpp"
+using namespace std;
+
+void Parent::doSomething() {
+    cout << "Parent -> doSomething() execute." << endl;
+}
 ```
 
 ---
 サブクラスの定義
 ```cpp:Child.hpp
+// Child.hpp
+#include "Parent.hpp"
+
+class Child : public Parent  {
+public:
+    void doSomething() override;
+};
 ```
 
 ---
 サブクラスの実装
 ```cpp:Child.cpp
+// Child.cpp
+#include <iostream>
+#include "Child.hpp"
+using namespace std;
+
+void Child::doSomething() {
+    throw std::runtime_error("Error occurred"); // 基底クラスが予期しない例外を投げる
+
+    cout << "Child -> doSomething() execute." << endl;
+}
 ```
 
 ---
-実行結果: 
-```cpp:ng_invaritants.cpp
+実行結果: 基底クラスは例外を投げないがサブクラスが例外を投げている
+
+```cpp:ng_exception.cpp
+// ng_exception.cpp
+#include <iostream>
+using namespace std;
+#include "Parent.hpp"
+#include "Child.hpp"
+   
+int main() {
+    Parent parent;
+    parent.doSomething();   // Parent -> doSomething() execute.
+
+    Child child;
+    child.doSomething();   // 例外発生: std::runtime_error: Error occurred
+
+    return 0;
+}
 ```
 
 
