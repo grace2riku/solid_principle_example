@@ -88,7 +88,7 @@ _footer: ""
 1. サブクラスに実装している
 2. 事前条件をサブクラスで強めている
 3. 事後条件をサブクラスで弱めている
-4. 不変条件をサブクラスでチェックしていない
+4. 不変条件をサブクラスで保持していない
 5. サブクラスで独自の例外を投げている
 
 ---
@@ -212,6 +212,9 @@ int main() {
 
 ---
 2. 事前条件をサブクラスで強めている
+
+事前条件：メソッドの引数など
+
 基底クラスの定義
 ```cpp:Parent.hpp
 // Parent.hpp
@@ -304,8 +307,83 @@ int main() {
 ---
 3. 事後条件をサブクラスで弱めている
 
+事後条件：メソッドの戻り値など
+
+基底クラスの定義
+```cpp:Parent.hpp
+// Parent.hpp
+class Parent {
+public:
+    virtual int getValue();
+};
+```
+
 ---
-4. 不変条件をサブクラスでチェックしていない
+基底クラスの実装
+```cpp:Parent.cpp
+// Parent.cpp
+#include <iostream>
+#include "Parent.hpp"
+using namespace std;
+
+int Parent::getValue() {
+    // 常に正の値を返す
+    return 42;
+}
+```
+
+---
+サブクラスの定義
+```cpp:Child.hpp
+// Child.hpp
+#include "Parent.hpp"
+
+class Child : public Parent  {
+public:
+    int getValue() override;
+};
+```
+
+---
+サブクラスの実装
+```cpp:Child.cpp
+// Child.cpp
+#include <iostream>
+#include "Child.hpp"
+using namespace std;
+
+int Child::getValue() {
+    int val = Parent::getValue();
+
+    // 事後条件を弱化している（負の値を返す可能性がある）
+    return val - 50;
+}
+```
+
+---
+実行結果: サブクラスが負の数を返している（基底クラスは正の数の戻り値を想定している）
+```cpp:ng_postconditions.cpp
+#include <iostream>
+using namespace std;
+#include "Parent.hpp"
+#include "Child.hpp"
+   
+int main() {
+    int ret_val;
+    Parent parent;
+    ret_val = parent.getValue();
+    cout << "Parent return value = " << ret_val << endl;  // Parent return value = 42
+
+    Child child;
+    ret_val = child.getValue();
+    cout << "Child return value = " << ret_val << endl; // Child return value = -8
+
+    return 0;
+}
+```
+
+---
+4. 不変条件をサブクラスで保持していない
 
 ---
 5. サブクラスで独自の例外を投げている
@@ -321,7 +399,7 @@ _footer: ""
 1. サブクラスに実装している
 2. 事前条件をサブクラスで強めている
 3. 事後条件をサブクラスで弱めている
-4. 不変条件をサブクラスでチェックしていない
+4. 不変条件をサブクラスで保持していない
 5. サブクラスで独自の例外を投げている
 
 ---
@@ -334,7 +412,7 @@ _footer: ""
 3. 【原則違反改善例】事後条件をサブクラスで弱めている
 
 ---
-4. 【原則違反改善例】不変条件をサブクラスでチェックしていない
+4. 【原則違反改善例】不変条件をサブクラスで保持していない
 
 ---
 5. 【原則違反改善例】サブクラスで独自の例外を投げている
