@@ -385,8 +385,116 @@ int main() {
 ---
 4. 不変条件をサブクラスで保持していない
 
+基底クラスの条件をサブクラスで保持していない、条件を緩めるなどした場合
+
+基底クラスの定義
+```cpp:Parent.hpp
+// Parent.hpp
+class Parent {
+protected:
+    int value;  // 不変条件: 常に正の数
+public:
+    Parent(int val) : value(val >= 0 ? val : throw std::invalid_argument("value must be non-negative")) {}
+    virtual void setValue(int val);
+};
+```
+
+---
+基底クラスの実装
+```cpp:Parent.cpp
+// Parent.cpp
+#include <iostream>
+#include "Parent.hpp"
+using namespace std;
+
+void Parent::setValue(int val) {
+    if (val < 0) {
+        throw std::invalid_argument("value must be non-negative");
+    }
+    value = val;
+    cout << "Parent value = " << value << endl;
+}
+```
+
+---
+サブクラスの定義
+```cpp:Child.hpp
+// Child.hpp
+#include "Parent.hpp"
+
+class Child : public Parent  {
+public:
+    Child(int val) : Parent(val) {}
+
+    void setValue(int val) override;
+};
+```
+
+---
+サブクラスの実装
+```cpp:Child.cpp
+#include <iostream>
+#include "Child.hpp"
+using namespace std;
+
+void Child::setValue(int val) {
+    if (val < -10) {    // 親クラスよりも許容範囲を狭めている
+        throw std::invalid_argument("Child requires value >= -10");
+    }
+    // 基底クラスの不変条件「正の数」を破っている
+    value = val;
+
+    cout << "Child value = " << value << endl;
+}
+```
+
+---
+実行結果: 基底クラスのメンバ変数は常に正の数というきまりをサブクラスで破っている
+```cpp:ng_invaritants.cpp
+// ng_invaritants.cpp
+#include <iostream>
+using namespace std;
+#include "Parent.hpp"
+#include "Child.hpp"
+   
+int main() {
+    Parent parent(0);
+    parent.setValue(1);     // Parent value = 1
+
+    Child child(0);
+    child.setValue(-10);    // Child value = -10
+
+    return 0;
+}
+```
+
 ---
 5. サブクラスで独自の例外を投げている
+
+---
+基底クラスの定義
+```cpp:Parent.hpp
+```
+
+---
+基底クラスの実装
+```cpp:Parent.cpp
+```
+
+---
+サブクラスの定義
+```cpp:Child.hpp
+```
+
+---
+サブクラスの実装
+```cpp:Child.cpp
+```
+
+---
+実行結果: 
+```cpp:ng_invaritants.cpp
+```
 
 
 # 原則に則った例

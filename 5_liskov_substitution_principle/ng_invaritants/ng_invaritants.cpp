@@ -11,7 +11,7 @@ int main() {
     Parent parent(0);
 //    parent.setValue(-1);    // 例外: std::invalid_argument("value must be non-negative")
 
-    parent.setValue(1); // arent value = 1
+    parent.setValue(1);     // Parent value = 1
 
 //    Child child(-1);    // 例外: std::invalid_argument("value must be non-negative")
 
