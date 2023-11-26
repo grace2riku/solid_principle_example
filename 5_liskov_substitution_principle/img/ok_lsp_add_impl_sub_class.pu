@@ -1,0 +1,35 @@
+@startuml
+
+abstract class Shape {
+    {abstract} +area() : int
+    {abstract} +getWidth() : int
+    {abstract} +getHeight() : int
+    {abstract} +setWidth(w : int) : void
+    {abstract} +setHeight(h : int) : void
+}
+
+class Rectangle {
+    -width : int
+    -height : int
+    +Rectangle(width : int, height : int)
+    +area() : int
+    +getWidth() : int
+    +getHeight() : int
+    +setWidth(w : int) : void
+    +setHeight(h : int) : void
+}
+
+class Square {
+    -size : int
+    +Square(size : int)
+    +area() : int
+    +getWidth() : int
+    +getHeight() : int
+    +setWidth(w : int) : void
+    +setHeight(h : int) : void
+}
+
+Shape <|-- Rectangle
+Shape <|-- Square
+
+@enduml
