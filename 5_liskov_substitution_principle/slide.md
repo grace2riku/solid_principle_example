@@ -212,7 +212,7 @@ int main() {
 
 ---
 2. 事前条件をサブクラスで強めている
-
+基底クラスの定義
 ```cpp:Parent.hpp
 // Parent.hpp
 #ifndef PARENT_HPP_
@@ -225,9 +225,10 @@ public:
 
 #endif	// PARENT_HPP_
 ```
-基底クラスの定義
 
 ---
+基底クラスの実装
+value < 0 か判定している。
 ```cpp:Parent.cpp
 // Parent.cpp
 #include <iostream>
@@ -242,10 +243,9 @@ void Parent::doWork(int value) {
     cout << "Parent value = " << value << endl;
 }
 ```
-基底クラスの実装
-value < 0 か判定している。
 
 ---
+サブクラスの定義
 ```cpp:Child.hpp
 // Child.hpp
 #include "Parent.hpp"
@@ -255,9 +255,12 @@ public:
     void doWork(int value) override;
 };
 ```
-サブクラスの定義
 
 ---
+サブクラスの実装
+**value < 10** か判定している。**基底クラスはvalue < 0** の判定だった。
+**事前条件を強化（条件が厳しく）** しているため基底クラスとサブクラスが置換不可になっている。
+
 ```cpp:Child.cpp
 // Child.cpp
 #include <iostream>
@@ -272,10 +275,30 @@ void Child::doWork(int value) {
     cout << "Child value = " << value << endl;
 }
 ```
-サブクラスの実装
 
-**value < 10** か判定している。**基底クラスはvalue < 0** の判定だった。
-**事前条件を強化（条件が厳しく）** しているため基底クラスとサブクラスが置換不可になっている。
+---
+実行結果: 基底クラスと同じ引数をサブクラスに指定した場合
+
+```cpp:ng_preconditions.cpp
+// ng_preconditions.cpp
+#include <iostream>
+using namespace std;
+#include "Parent.hpp"
+#include "Child.hpp"
+
+int main() {
+    Parent parent;
+    parent.doWork(0);   // Parent value = 0
+
+    Child child;
+    child.doWork(10);   // Child value = 10
+
+    // 例外発生 std::invalid_argument: Child requires value >= 10
+    child.doWork(0);
+
+    return 0;
+}
+```
 
 
 ---
