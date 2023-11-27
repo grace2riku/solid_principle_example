@@ -752,6 +752,25 @@ int Child::getValue() {
 
 ---
 4. 【原則違反改善例】不変条件をサブクラスで保持していない
+基底クラスの不変条件を使えば置換可能
+
+```cpp:Child.cpp
+// Child.cpp
+void Child::setValue(int val) {
+    // LSP原則NG: 親クラスよりも許容範囲を狭めている
+//    if (val < -10) {
+//        throw std::invalid_argument("Child requires value >= -10");
+//    }
+//    // 基底クラスの不変条件「正の数」を破っている
+//    value = val;
+
+    // LSP原則OK: 親クラスの不変条件を保持する
+    Parent::setValue(val);
+
+    cout << "Child value = " << this->value << endl;
+}
+```
+
 
 ---
 5. 【原則違反改善例】サブクラスで独自の例外を投げている
