@@ -734,6 +734,21 @@ void Child::doWork(int value) {
 
 ---
 3. 【原則違反改善例】事後条件をサブクラスで弱めている
+サブクラスは基底クラスと同じ事後条件にするか、もしくは事前条件を強く（より大きな値に）すれば置換可能。
+
+```cpp:Child.cpp
+// Child.cpp
+int Child::getValue() {
+    int val = Parent::getValue();
+
+    // LSP原則NG: 事後条件を弱化している（負の値を返す可能性がある）
+//    return val - 50;
+
+    // LSP原則OK: 事後条件を強化している（より大きな正の値を返す）
+    return val + 10;
+}
+```
+
 
 ---
 4. 【原則違反改善例】不変条件をサブクラスで保持していない
