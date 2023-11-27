@@ -571,6 +571,148 @@ _footer: ""
 右: 変更後のクラス図
 ![bg right width:670px](img/diff_lsp_add_impl_sub_class.drawio.png)
 
+---
+共通インターフェース: 長方形、正方形はこのクラスを実装する
+
+```cpp:Shape.hpp
+// Shape.hpp
+class Shape {
+public:
+    virtual int area() const = 0;
+    virtual int getWidth() const = 0;
+    virtual int getHeight() const = 0;
+    virtual void setWidth(const int w) = 0;
+    virtual void setHeight(const int h) = 0;
+    virtual ~Shape() {}
+};
+```
+
+---
+長方形の定義
+
+```cpp:Rectangle.hpp
+// Rectangle.hpp
+#include "Shape.hpp"
+
+class Rectangle : public Shape {
+protected:
+    int width, height;
+
+public:
+    Rectangle(const int width, const int height) : width(width), height(height) {}
+
+    int area() const override;
+    int getWidth() const override;
+    int getHeight() const override;
+    void setWidth(const int w) override;
+    void setHeight(const int h) override;
+};
+```
+
+---
+長方形の実装
+
+```cpp:Rectangle.cpp
+// Rectangle.cpp
+#include "Rectangle.hpp"
+
+int Rectangle::area() const {
+    return width * height;
+}
+
+int Rectangle::getWidth() const {
+    return width;
+}
+
+int Rectangle::getHeight() const {
+    return height;
+}
+
+void Rectangle::setWidth(const int w) {
+    width = w;
+}
+
+void Rectangle::setHeight(const int h) {
+    height = h;
+}
+```
+
+---
+正方形の定義
+
+```cpp:Square.hpp
+// Square.hpp
+#include "Shape.hpp"
+
+class Square : public Shape {
+private:
+    int size;
+
+public:
+    Square(int size) : size(size) {}
+
+    int area() const override;
+    int getWidth() const override;
+    int getHeight() const override;
+    void setWidth(const int w) override;
+    void setHeight(const int h) override;
+};
+```
+
+---
+正方形の実装
+
+```cpp:Square.cpp
+// Square.cpp
+#include "Square.hpp"
+
+int Square::area() const {
+    return size * size;
+}
+
+int Square::getWidth() const {
+    return size;
+}
+
+int Square::getHeight() const {
+    return size;
+}
+
+void Square::setWidth(const int w) {
+    size = w;
+}
+
+void Square::setHeight(const int h) {
+    size = h;
+}
+```
+
+---
+実行結果: 正方形・長方形は共通インターフェースを実装し、長方形・正方形それぞれ独自の実装を進めることができた。
+
+```cpp:ok_lsp_add_impl_sub_class.cpp
+// ok_lsp_add_impl_sub_class.cpp
+#include <iostream>
+using namespace std;
+#include "Rectangle.hpp"
+#include "Square.hpp"
+#include "Shape.hpp"
+
+void process(Shape& shape) {
+    int w = shape.area() / shape.getHeight();
+    shape.setHeight(10);
+    std::cout << "expected area = " << (w * 10) << ", got " << shape.area() << std::endl;
+}
+
+int main() {
+    Rectangle r(5, 5);
+    process(r);  // expected area = 50, got 50
+    Square s(5);
+    process(s);  // expected area = 100, got 100, LSP is not violation!
+    return 0;
+}
+```
+
 
 ---
 2. 【原則違反改善例】事前条件をサブクラスで強めている
