@@ -715,6 +715,22 @@ int main() {
 
 ---
 2. 【原則違反改善例】事前条件をサブクラスで強めている
+サブクラスは基底クラスと同じ事前条件にするか、もしくは事前条件を弱く（緩めれば）すれば置換可能。
+
+```cpp:Child.cpp
+// Child.cpp
+void Child::doWork(int value) {
+//    if (value < 10) {
+//        throw std::invalid_argument("Child requires value >= 10"); // 事前条件を強化している
+//    }
+
+    // 基底クラスの事前条件を維持 (または下記を削除することで事前条件を緩める)
+    Parent::doWork(value);
+
+    // 子クラス固有の作業をする
+    cout << "Child value = " << value << endl;
+}
+```
 
 ---
 3. 【原則違反改善例】事後条件をサブクラスで弱めている
