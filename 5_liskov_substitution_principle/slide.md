@@ -775,6 +775,20 @@ void Child::setValue(int val) {
 ---
 5. 【原則違反改善例】サブクラスで独自の例外を投げている
 
+基底クラスが予期しない例外をなげなければ置換可能
+
+```cpp:Child.cpp
+// Child.cpp
+void Child::setValue(int val) {
+void Child::doSomething() {
+    // LSP NG: 基底クラスが予期しない例外を投げる
+//    throw std::runtime_error("Error occurred"); 
+
+    // LSP OK: 基底クラスが予期しない例外は投げない
+    cout << "Child -> doSomething() execute." << endl;
+}
+```
+
 
 # 今回の設計所感
 
