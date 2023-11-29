@@ -362,12 +362,7 @@ int Child::getValue() {
 
 ---
 実行結果: サブクラスが負の数を返している（基底クラスは正の数の戻り値を想定している）
-```cpp:ng_postconditions.cpp
-#include <iostream>
-using namespace std;
-#include "Parent.hpp"
-#include "Child.hpp"
-   
+```cpp:ng_postconditions.cpp   
 int main() {
     int ret_val;
     Parent parent;
@@ -451,12 +446,7 @@ void Child::setValue(int val) {
 ---
 実行結果: 基底クラスのメンバ変数は常に正の数というきまりをサブクラスで破っている
 ```cpp:ng_invaritants.cpp
-// ng_invaritants.cpp
-#include <iostream>
-using namespace std;
-#include "Parent.hpp"
-#include "Child.hpp"
-   
+// ng_invaritants.cpp   
 int main() {
     Parent parent(0);
     parent.setValue(1);     // Parent value = 1
@@ -524,12 +514,7 @@ void Child::doSomething() {
 実行結果: 基底クラスは例外を投げないがサブクラスが例外を投げている
 
 ```cpp:ng_exception.cpp
-// ng_exception.cpp
-#include <iostream>
-using namespace std;
-#include "Parent.hpp"
-#include "Child.hpp"
-   
+// ng_exception.cpp   
 int main() {
     Parent parent;
     parent.doSomething();   // Parent -> doSomething() execute.
@@ -564,12 +549,12 @@ _footer: ""
 これを改善するには
 * 正方形は長方形の継承をやめる
 * 長方形、正方形の共通のインタフェースを定義する
-共通のインターフェースを長方形、正方形を実装するようにする。
+共通のインターフェースを長方形、正方形で実装するようにする。
 
 ---
 左: 変更前のクラス図
 右: 変更後のクラス図
-![bg right width:670px](img/diff_lsp_add_impl_sub_class.drawio.png)
+![width:850px](img/diff_lsp_add_impl_sub_class.drawio.png)
 
 ---
 共通インターフェース: 長方形、正方形はこのクラスを実装する
@@ -692,12 +677,6 @@ void Square::setHeight(const int h) {
 
 ```cpp:ok_lsp_add_impl_sub_class.cpp
 // ok_lsp_add_impl_sub_class.cpp
-#include <iostream>
-using namespace std;
-#include "Rectangle.hpp"
-#include "Square.hpp"
-#include "Shape.hpp"
-
 void process(Shape& shape) {
     int w = shape.area() / shape.getHeight();
     shape.setHeight(10);
@@ -741,10 +720,10 @@ void Child::doWork(int value) {
 int Child::getValue() {
     int val = Parent::getValue();
 
-    // LSP原則NG: 事後条件を弱化している（負の値を返す可能性がある）
+    // LSP NG: 事後条件を弱化している（負の値を返す可能性がある）
 //    return val - 50;
 
-    // LSP原則OK: 事後条件を強化している（より大きな正の値を返す）
+    // LSP OK: 事後条件を強化している（より大きな正の値を返す）
     return val + 10;
 }
 ```
@@ -757,14 +736,14 @@ int Child::getValue() {
 ```cpp:Child.cpp
 // Child.cpp
 void Child::setValue(int val) {
-    // LSP原則NG: 親クラスよりも許容範囲を狭めている
+    // LSP NG: 親クラスよりも許容範囲を狭めている
 //    if (val < -10) {
 //        throw std::invalid_argument("Child requires value >= -10");
 //    }
 //    // 基底クラスの不変条件「正の数」を破っている
 //    value = val;
 
-    // LSP原則OK: 親クラスの不変条件を保持する
+    // LSP OK: 親クラスの不変条件を保持する
     Parent::setValue(val);
 
     cout << "Child value = " << this->value << endl;
@@ -872,10 +851,10 @@ Rectangleを継承するコードはコンパイルエラーになる。
 継承を使わないことを推奨するようなことばかり書いてきた。
 新しい言語も継承の機能がなかったりする。
 
-継承は使わないほうが良いのでしょうか?
-継承が効力を発揮する場面はないのでしょうか?
+継承は使わないほうが良いのか?
+継承が効力を発揮する場面はないのか?
 
-継承の使い所についてつぎの動画でひとつの解を提示してくれています。
+継承の使い所についてつぎの動画でひとつの解を提示してくれている。
 [オブジェクト指向の原則２：リスコフの置換原則と継承以外の解決方法](https://www.udemy.com/course/objectfive2/)
 #48_共通要素をまとめる継承
 #49_共通要素をまとめる継承の実装例
@@ -891,8 +870,8 @@ Rectangleを継承するコードはコンパイルエラーになる。
 ---
 継承の使いところとして個人的に良いかもしれないと思ったこと
 
-* Windows FormのTextのように画面の部品のクラスを継承して拡張する
-* サードパーティー製のミドルウェアを継承して自分たちの開発対象向けに拡張する、みたいな場面
+* Windows FormのTextの例のように画面の部品のクラスを継承して拡張する
+* サードパーティー製のライブラリを継承して自分たちの開発対象向けに拡張する、みたいな場面
 
 # 設計についてのディスカッション・質問
 <!--
