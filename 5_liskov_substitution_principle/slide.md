@@ -26,6 +26,7 @@ footer: ""
 - SOLIDについて
 - リスコフの置換原則（Liskov Substitution Principle）について
 - 原則違反の例
+- サンプルコードについて
 - 原則に則った例
 - 今回の設計所感
 - 設計についてのディスカッション・質問
@@ -79,6 +80,47 @@ _footer: ""
 * 基底型オブジェクトを派生型オブジェクトで型安全に代替できること
 ※この資料ではつぎの用語の定義とする
 スーパータイプ → 基底クラス・スーパークラス, サブタイプ → 派生クラス・サブクラス 
+
+# サンプルコードについて
+サンプルコードは[こちらのGitHubリポジトリ](https://github.com/grace2riku/solid_principle_example/tree/main/5_liskov_substitution_principle)に格納している。
+▪️原則違反のサンプルコード
+| サンプルコードコード内容 | GitHubリポジトリのディレクトリ名 |
+| ---- | ---- |
+| 1. サブクラスに実装 | no_lsp_add_impl_sub_class |
+| 2. 事前条件 | ng_preconditions |
+| 3. 事後条件 | ng_postconditions |
+| 4. 不変条件 | ng_invaritants |
+| 5. 例外 | ng_exception |
+
+---
+▪️原則に則ったサンプルコード
+| サンプルコードコード内容 | GitHubリポジトリのディレクトリ名 |
+| ---- | ---- |
+| 1. サブクラスに実装 | ok_lsp_add_impl_sub_class |
+| 2. 事前条件 | ok_preconditions |
+| 3. 事後条件 | ok_postconditions |
+| 4. 不変条件 | ok_invaritants |
+| 5. 例外 | ok_exception |
+
+* 今回の設計所感 -> 継承で使われる意図がないことを明示する
+no_inheritance
+
+---
+サンプルコードの実行方法について
+* makeとC++コンパイラが必要
+* GitHubリポジトリを自分のローカル環境にzipダウンロードもしくはgit cloneする。
+* 確認したいサンプルコードのディレクトリでmakeを実行する
+* ディレクトリ名.appの実行ファイルができるので実行する
+
+私の確認環境（MacOS, clangで確認）
+```
+$ gcc -v
+Apple clang version 15.0.0 (clang-1500.0.40.1)
+Target: x86_64-apple-darwin22.6.0
+Thread model: posix
+InstalledDir: /Library/Developer/CommandLineTools/usr/bin
+```
+
 
 # 原則違反の例
 <!--
